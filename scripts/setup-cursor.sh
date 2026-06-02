@@ -1,14 +1,26 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# Note: no "set -u" — BASH_SOURCE is unset when script is piped: curl ... | bash -s --
+set -eo pipefail
 
 # Install shared Cursor config into a target project.
 # Works without cloning repo to disk permanently (downloads zip or shallow git clone).
 
 REPO_URL_DEFAULT="https://github.com/thitiwut00897/my-cursor-rules.git"
 REPO_BRANCH_DEFAULT="main"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)" || SCRIPT_DIR=""
+
+resolve_script_dir() {
+  local src="${BASH_SOURCE[0]:-}"
+  case "$src" in
+    ""|bash|/bin/bash|/usr/bin/bash|-s|/dev/fd/*|/dev/stdin) return 0 ;;
+  esac
+  if [[ -f "$src" ]]; then
+    cd "$(dirname "$src")" && pwd
+  fi
+}
+
+SCRIPT_DIR="$(resolve_script_dir)"
 CONFIG_REPO_ROOT=""
-if [[ -n "$SCRIPT_DIR" && "$SCRIPT_DIR" != "/dev/fd" ]]; then
+if [[ -n "$SCRIPT_DIR" ]]; then
   CONFIG_REPO_ROOT="$(cd "$SCRIPT_DIR/.." 2>/dev/null && pwd)" || CONFIG_REPO_ROOT=""
 fi
 
