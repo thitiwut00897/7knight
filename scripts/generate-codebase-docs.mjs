@@ -9,7 +9,6 @@
  *
  * Options:
  *   node generate-codebase-docs.mjs <project> [--force]
- *   node generate-codebase-docs.mjs <project> --scaffold
  */
 
 import fs from 'fs';
@@ -23,7 +22,6 @@ const promptsDir = path.join(__dirname, 'prompts');
 
 const projectPath = path.resolve(process.argv[2] || process.cwd());
 const force = process.argv.includes('--force');
-const scaffold = process.argv.includes('--scaffold');
 
 const docsRoot = path.join(projectPath, 'docs', 'codebase-docs');
 const templatesDir = path.join(scriptsRoot, 'docs-templates');
@@ -194,26 +192,17 @@ function runDocsSetup(scan, scanMd) {
   write('prompts/phase2-copy.txt', readPrompt('phase2-copy.txt'));
   write('HOW-TO-GENERATE-DOCS.md', buildHowTo(scan));
 
-  // ลบชื่อไฟล์เก่าที่ทำให้เข้าใจผิดว่าให้รันอัตโนมัติ
-  for (const old of ['GENERATE-DOCS-PROMPT-PHASE1.md', 'GENERATE-DOCS-PROMPT-PHASE2.md']) {
-    const p = path.join(docsRoot, old);
-    if (exists(p)) {
-      fs.unlinkSync(p);
-      console.log('  ลบไฟล์เก่า:', old);
-    }
-  }
-
   const templateSubdir = path.join(codebaseDocsTemplates, '_template');
   if (exists(templateSubdir)) {
     copyDirRecursive(templateSubdir, path.join(docsRoot, '_template'));
     console.log('  copy _template/ (HTML แม่แบบ + คู่มือ)');
   }
 
-  const stylesSrc = exists(path.join(codebaseDocsTemplates, 'styles.css'))
-    ? path.join(codebaseDocsTemplates, 'styles.css')
-    : path.join(templatesDir, 'styles.css');
+  const stylesSrc = path.join(codebaseDocsTemplates, 'styles.css');
   if (exists(stylesSrc)) {
     copyFileEnsureDir(stylesSrc, path.join(docsRoot, 'styles.css'));
+  } else {
+    console.warn('  WARN: ไม่พบ docs-templates/codebase-docs/styles.css');
   }
 
   const blueprintSrc = path.join(templatesDir, 'project-blueprint.md');
@@ -250,19 +239,6 @@ HTML ต้องตาม \`_template/HTML-TEMPLATE-GUIDE.md\` และ \`page
   console.log('  3. บันทึก OUTLINE-PHASE1.md → แล้ว copy phase2-copy.txt');
 }
 
-async function runScaffold() {
-  const legacy = path.join(__dirname, 'generate-codebase-docs-scaffold.mjs');
-  if (exists(legacy)) {
-    const { spawnSync } = await import('child_process');
-    const r = spawnSync(process.execPath, [legacy, projectPath, ...(force ? ['--force'] : [])], {
-      stdio: 'inherit',
-    });
-    process.exit(r.status ?? 1);
-  }
-  console.error('Scaffold module not found');
-  process.exit(1);
-}
-
 async function main() {
   if (!force && exists(path.join(docsRoot, 'HOW-TO-GENERATE-DOCS.md'))) {
     console.log('docs/codebase-docs มี HOW-TO แล้ว — ข้าม (ใช้ --force เพื่อสร้างใหม่)');
@@ -279,11 +255,6 @@ async function main() {
   const scanMd = formatScanAsMarkdown(scan);
 
   fs.mkdirSync(path.join(projectPath, 'docs', 'work-summary'), { recursive: true });
-
-  if (scaffold) {
-    await runScaffold();
-    return;
-  }
 
   runDocsSetup(scan, scanMd);
   console.log(
