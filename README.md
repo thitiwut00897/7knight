@@ -53,26 +53,36 @@ bash ~/Github-Work/my-cursor-rules/scripts/setup-cursor.sh --local --create --pr
 
 1. ดึง repo `my-cursor-rules` (git clone หรือ zip)
 2. copy `.cursor/` เข้าโปรเจกต์
-3. `--create` → **สแกนโปรเจกต์** + สร้าง prompt ให้ **Cursor Agent (Opus)** ทำ HTML docs แบบ Well Life
+3. `--create` → **สแกนโปรเจกต์** + สร้างไฟล์คู่มือ — **ไม่รัน Cursor ให้** user **copy prompt เอง**
 
-### หลัง `--create` (ทำใน Cursor)
+### หลัง `--create` (ทำมือใน Cursor)
 
 | ไฟล์ | ทำอะไร |
 |------|--------|
-| `.scan/PROJECT-CONTEXT.md` | ข้อมูลสแกนจากโค้ดจริง |
-| `GENERATE-DOCS-PROMPT-PHASE1.md` | ส่งให้ Opus → ได้สารบัญ (ยังไม่สร้าง HTML) |
-| `GENERATE-DOCS-PROMPT-PHASE2.md` | หลังอนุมัติ outline → สร้าง HTML ทุกหน้า |
-| `styles.css` | CSS สำหรับ HTML docs |
-
-**ทางเลือก:** `AI_DOCS_OUTLINE=1` + `ANTHROPIC_API_KEY` → เรียก API สร้าง outline อัตโนมัติ
-
-```bash
-export ANTHROPIC_API_KEY="sk-ant-..."
-AI_DOCS_OUTLINE=1 bash .../setup-cursor.sh --local --create --project .
-```
+| `HOW-TO-GENERATE-DOCS.md` | คู่มือขั้นตอน + prompt สำรอง |
+| `_template/HTML-TEMPLATE-GUIDE.md` | กฎโครงสร้าง HTML (Agent อ่านก่อนสร้างหน้า) |
+| `_template/page-root.html` | แม่แบบหน้า root |
+| `_template/page-feature.html` | แม่แบบหน้า `features/` |
+| `prompts/phase1-copy.txt` | Copy → Agent → สารบัญ |
+| `prompts/phase2-copy.txt` | Copy → Agent → สร้าง HTML ตาม template |
+| `.scan/PROJECT-CONTEXT.md` | ข้อมูลสแกน |
+| `styles.css` | CSS กลาง (ห้ามเปลี่ยน class หลัก) |
 
 **Scaffold เก่า** (1 container = 1 html): `node scripts/generate-codebase-docs.mjs . --scaffold --force`
 
+---
+
+## แก้ปัญหา
+
+| อาการ | วิธีแก้ |
+|-------|---------|
+| **วางคำสั่งแล้วไม่มีอะไรเกิดขึ้น** | มักลืม `bash -s --` — ใช้ `curl ... \| bash -s -- --create --project .` ไม่ใช่ `\| bash` อย่างเดียว |
+| ขึ้น `ไม่พบ --create` | เหมือนด้านบน — ต้องมี `bash -s --` |
+| ไม่เห็น log | อัปเดตสคริปต์ล่าสุดจาก `main` (log ออกทั้ง stdout) |
+| `Downloaded repo missing .cursor` | ใช้สคริปต์ล่าสุดจาก `main` |
+| `curl 404` | ตรวจว่า repo Public |
+| ไม่มี docs / ไม่มี `HOW-TO-GENERATE-DOCS.md` | ติดตั้ง Node 18+ แล้วรัน `--create` อีกครั้ง |
+| มี `.cursor` แต่ไม่มี HTML ครบ | **ปกติ** — เปิด `HOW-TO-GENERATE-DOCS.md` แล้ว copy `prompts/phase1-copy.txt` ไปวางใน Agent |
 
 ---
 
@@ -80,10 +90,13 @@ AI_DOCS_OUTLINE=1 bash .../setup-cursor.sh --local --create --project .
 
 ```text
 my-cursor-rules/
-├── .cursor/           # แพ็กเต็ม
-├── rules/ skills/     # สำเนา (สคริปต์ใช้ได้ทั้งคู่)
+├── .cursor/
 ├── docs-templates/
+│   └── codebase-docs/
+│       ├── styles.css
+│       └── _template/   # HTML แม่แบบ + HTML-TEMPLATE-GUIDE.md
 └── scripts/
     ├── setup-cursor.sh
+    ├── prompts/phase1-copy.txt, phase2-copy.txt
     └── generate-codebase-docs.mjs
 ```

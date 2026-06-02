@@ -1,0 +1,31 @@
+@Workspace สร้าง/อัปเดต Documentation HTML ใน docs/codebase-docs/ ตาม OUTLINE-PHASE1.md
+
+## อ่านโครงสร้าง HTML ก่อน (บังคับ — ใน repo นี้เท่านั้น)
+
+1. @docs/codebase-docs/_template/HTML-TEMPLATE-GUIDE.md
+2. @docs/codebase-docs/_template/page-root.html — ใช้เป็นฐานหน้า root
+3. @docs/codebase-docs/_template/page-feature.html — ใช้เป็นฐานหน้า features/
+4. @docs/codebase-docs/styles.css — ห้ามเปลี่ยน class หลัก
+5. เปิดอ่านไฟล์ .html ที่มีอยู่แล้วใน docs/codebase-docs/ (ถ้ามี) แล้วทำหน้าใหม่ให้ **โครงและ class เหมือนกัน** (sidebar, page-header, section, card, table, file-tree)
+
+อ่านเนื้อหาจากโค้ด:
+- @docs/codebase-docs/OUTLINE-PHASE1.md
+- @docs/codebase-docs/.scan/PROJECT-CONTEXT.md
+- โค้ดจริงใน src/
+
+ห้ามอ้างอิงโปรเจกต์อื่นนอก repo
+
+## กฎสร้างไฟล์
+
+1. ทุกหน้าใช้ sidebar **ชุดเดียวกัน** ตาม outline — `class="active"` ที่ลิงก์หน้านั้น
+2. หน้า root: `href="styles.css"` — หน้า features/: `href="../styles.css"` และลิงก์ `../` ไป root
+3. แทนที่ `{{PLACEHOLDER}}` ใน template ด้วยชื่อแอป/โปรเจกต์จริง
+4. เนื้อหาต้องมาจากโค้ดจริง — ไม่เดา
+5. วันที่ใน `last-updated` ใช้วันนี้
+6. อัปเดต project-blueprint.md และ AI-GUIDE.md ให้ตรงโปรเจกต์
+
+## ไฟล์ที่ต้องมี (ตาม outline)
+
+index.html, overview.html, architecture.html, navigation.html, state-management.html, api-layer.html, components.html, theme-styling.html, utilities.html, features/<slug>.html
+
+หลังเสร็จ เปิด index.html ใน browser ตรวจ sidebar และลิงก์

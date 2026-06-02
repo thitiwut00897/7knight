@@ -189,10 +189,8 @@ if [ -z "$SKIP_DOCS" ]; then
     log "      WARN: ไม่มี node — ติดตั้ง Node.js 18+ แล้วรัน:"
     log "      node $GEN $PROJECT --force"
   else
-    log "      node generate-codebase-docs.mjs ..."
-    NODE_ARGS=("$GEN" "$PROJECT" "--force")
-    [ -n "${AI_DOCS_OUTLINE:-}" ] && NODE_ARGS+=("--ai-outline")
-    if node "${NODE_ARGS[@]}"; then
+    log "      node generate-codebase-docs.mjs (สแกน + ไฟล์คู่มือ copy prompt) ..."
+    if node "$GEN" "$PROJECT" "--force"; then
       DOCS_OK="yes"
     else
       log "      WARN: generate docs ล้มเหลว (code=$?) — .cursor ติดตั้งแล้ว"
@@ -215,14 +213,15 @@ log "  .cursor:       $([ -d "$TARGET/rules" ] && echo OK || echo MISSING)"
 log "  rules:         ${RULES_COUNT:-0} ไฟล์"
 log "  docs:          $DOCS_OK"
 
-if [ -f "$PROJECT/docs/codebase-docs/GENERATE-DOCS-PROMPT-PHASE1.md" ]; then
+if [ -f "$PROJECT/docs/codebase-docs/HOW-TO-GENERATE-DOCS.md" ]; then
   log ""
-  log "  📄 ขั้นตอนถัดไป (Cursor Agent + Opus):"
-  log "     เปิดไฟล์นี้ใน Cursor แล้วส่งให้ Agent:"
-  log "     $PROJECT/docs/codebase-docs/GENERATE-DOCS-PROMPT-PHASE1.md"
+  log "  📄 สร้าง HTML docs (ทำมือ — copy prompt เอง):"
+  log "     1. เปิด $PROJECT/docs/codebase-docs/HOW-TO-GENERATE-DOCS.md"
+  log "     2. Copy docs/codebase-docs/prompts/phase1-copy.txt → วางใน Cursor Agent"
+  log "     3. บันทึก OUTLINE-PHASE1.md แล้ว copy phase2-copy.txt"
 elif [ "$DOCS_OK" = "no" ]; then
   log ""
-  log "  ⚠️  ยังไม่มี docs prompts — ติดตั้ง node แล้วรัน:"
+  log "  ⚠️  ยังไม่มี docs — ติดตั้ง node แล้วรัน:"
   log "     node $SRC/scripts/generate-codebase-docs.mjs $PROJECT --force"
 fi
 
