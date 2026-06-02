@@ -22,10 +22,35 @@
 3. แทนที่ `{{PLACEHOLDER}}` ใน template ด้วยชื่อแอป/โปรเจกต์จริง
 4. เนื้อหาต้องมาจากโค้ดจริง — ไม่เดา
 5. วันที่ใน `last-updated` ใช้วันนี้
-6. อัปเดต project-blueprint.md และ AI-GUIDE.md ให้ตรงโปรเจกต์ (เนื้อหา docs จริง ไม่ใช่ขั้นตอน setup)
+6. เขียน `AI-GUIDE.md` ใหม่ให้เป็นจุดเข้าหลักสำหรับ Agent (แผนที่ไปยังหน้า HTML, path โค้ด, `.cursor/rules` / `skills` — ไม่ใส่ขั้นตอน setup)
+7. อัปเดต `.cursor/.cursorrules` และ `.cursor/rules/architecture.mdc` จากโค้ดจริงของโปรเจกต์นี้ (แทน placeholder จากแพ็กติดตั้ง — ห้ามคัดลอกจากโปรเจกต์อื่น)
 
 ## ไฟล์ที่ต้องมี (ตาม outline)
 
 index.html, overview.html, architecture.html, navigation.html, state-management.html, api-layer.html, components.html, theme-styling.html, utilities.html, features/<slug>.html
 
-หลังเสร็จ เปิด index.html ใน browser ตรวจ sidebar และลิงก์
+## หลังสร้าง HTML ครบแล้ว — ลบไฟล์ setup (บังคับ)
+
+ลบออกจาก `docs/codebase-docs/` ทั้งหมด (ถ้ามี):
+
+- `prompts/` — รวม phase1-copy.txt, phase2-copy.txt
+- `HOW-TO-GENERATE-DOCS.md`
+- `OUTLINE-PHASE1.md`
+- `.scan/` — รวม PROJECT-CONTEXT.md, scan.json
+- `_template/`
+- `project-blueprint.md`
+
+**คงไว้ใน `docs/codebase-docs/` เท่านั้น:**
+
+- ไฟล์ `.html` ทั้งหมด (รวม `features/`)
+- `styles.css` (จำเป็นสำหรับเปิด HTML ใน browser)
+- `AI-GUIDE.md`
+
+ห้ามลบ `styles.css` หรือไฟล์ `.html`
+
+## ตรวจสอบก่อนจบ
+
+1. เปิด `index.html` ใน browser ตรวจ sidebar และลิงก์
+2. ยืนยันว่าไม่เหลือโฟลเดอร์/ไฟล์ setup ด้านบน
+3. `AI-GUIDE.md` อธิบายชัดว่า Agent ควรอ่านหน้า HTML ไหนเมื่อต้องการหาอะไรในโปรเจกต์
+4. `.cursor/.cursorrules` และ `architecture.mdc` สะท้อน stack/path ของโปรเจกต์นี้ (ไม่ใช่ placeholder ทั่วไป)

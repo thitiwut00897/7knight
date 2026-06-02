@@ -72,7 +72,7 @@
 
 - `stats-row` 4 ช่อง (containers, components, reducers, features)
 - `card-grid` ลิงก์ไปหน้าหลัก
-- section สำหรับ AI: ลิงก์ `project-blueprint.md`, `AI-GUIDE.md`
+- section สำหรับ AI: ลิงก์ `AI-GUIDE.md` (หลัง Phase 2 ไม่มี project-blueprint.md ในโฟลเดอร์นี้)
 
 ---
 

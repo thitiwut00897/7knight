@@ -24,5 +24,8 @@ project-root/
 
 ## อ้างอิงเพิ่มเติม
 
+> **หมายเหตุ:** ไฟล์นี้เป็น placeholder ช่วง setup เท่านั้น — หลัง Phase 2 จะถูกลบ  
+> เอกสารถาวร: หน้า HTML ใน `docs/codebase-docs/` + `AI-GUIDE.md`
+
 - `docs/codebase-docs/AI-GUIDE.md`
 - `.cursor/rules/architecture.mdc` (ถ้ามี — ปรับให้ตรงโปรเจกต์)

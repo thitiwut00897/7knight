@@ -151,7 +151,8 @@ Agent ต้องทำตาม \`_template/HTML-TEMPLATE-GUIDE.md\` และ
 2. เปิด \`docs/codebase-docs/prompts/phase2-copy.txt\`
 3. **Copy ทั้งไฟล์** → วางในแชท Agent → ส่ง
 4. รอ Agent สร้าง/อัปเดตไฟล์ใน \`docs/codebase-docs/\`
-5. เปิด \`index.html\` ในเบราว์เซอร์ตรวจ sidebar และลิงก์
+5. Agent ลบไฟล์ setup (prompts, .scan, _template, HOW-TO, OUTLINE, project-blueprint) — เหลือ \`.html\`, \`styles.css\`, \`AI-GUIDE.md\`
+6. เปิด \`index.html\` ในเบราว์เซอร์ตรวจ sidebar และลิงก์
 
 ---
 
@@ -178,6 +179,7 @@ ${p2.trim()}
 ## หมายเหตุ
 
 - รูปแบบ HTML อ่านจาก \`docs/codebase-docs/_template/\` และไฟล์ \`.html\` ในโปรเจกต์นี้เท่านั้น — ไม่อ้างอิง repo อื่น
+- หลัง Phase 2 เสร็จ โฟลเดอร์นี้ควรเหลือเฉพาะ \`.html\`, \`styles.css\`, \`AI-GUIDE.md\`
 - รัน \`--create\` ซ้ำด้วย \`--force\` จะอัปเดต template + prompt (ไม่ทับ \`index.html\` ที่มี sidebar ครบแล้ว)
 `;
 }
