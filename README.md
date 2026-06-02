@@ -8,9 +8,14 @@
 
 ## คำสั่งเดียว (copy ใช้ได้เลย)
 
+**สำคัญ:** ต้อง `cd` เข้าโปรเจกต์ก่อน และต้องมี `bash -s --` ก่อน `--create` (มิฉะนั้นสคริปต์ไม่ได้รับ arguments)
+
 ```bash
 cd /path/to/your-project
+curl -fsSL https://raw.githubusercontent.com/thitiwut00897/my-cursor-rules/main/scripts/setup-cursor.sh | bash -s -- --create --project .
 ```
+
+ถ้าสำเร็จจะเห็นข้อความประมาณ `my-cursor-rules setup`, `[1/4] ... [4/4]`, `✅ เสร็จแล้ว`
 
 ### `--create` — ติดตั้ง `.cursor` + สร้าง `docs/codebase-docs` ใหม่
 
@@ -68,15 +73,6 @@ AI_DOCS_OUTLINE=1 bash .../setup-cursor.sh --local --create --project .
 
 **Scaffold เก่า** (1 container = 1 html): `node scripts/generate-codebase-docs.mjs . --scaffold --force`
 
----
-
-## แก้ปัญหา
-
-| อาการ | วิธีแก้ |
-|-------|---------|
-| `Downloaded repo missing .cursor` | ใช้สคริปต์ล่าสุดจาก `main` (เขียนใหม่แล้ว) |
-| `curl 404` | ตรวจว่า repo Public |
-| ไม่มี docs | ติดตั้ง `node` แล้วรัน `--create` อีกครั้ง |
 
 ---
 
