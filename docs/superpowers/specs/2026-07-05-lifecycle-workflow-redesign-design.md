@@ -1,147 +1,147 @@
-# Design: Lifecycle Workflow Redesign (Define → Plan → Build → Verify → Review → Ship)
+# Design: ปรับ Workflow ตาม Lifecycle (Define → Plan → Build → Verify → Review → Ship)
 
-**Date:** 2026-07-05
-**Status:** Approved (pending final doc review)
-**Supersedes in part:** [`2026-07-05-claude-code-plugin-migration-design.md`](2026-07-05-claude-code-plugin-migration-design.md) — that doc's plugin structure (agents/skills/commands/hooks layout, marketplace mechanism) still stands; this doc replaces the *content* of the PO/Tester/Senior/Refactor workflow it described.
+**วันที่:** 2026-07-05
+**สถานะ:** Approved (รอรีวิวเอกสารรอบสุดท้าย)
+**แทนที่บางส่วนของ:** [`2026-07-05-claude-code-plugin-migration-design.md`](2026-07-05-claude-code-plugin-migration-design.md) — โครงสร้าง plugin ของเอกสารนั้น (โครง agents/skills/commands/hooks, กลไก marketplace) ยังใช้เหมือนเดิม เอกสารนี้แทนที่แค่ **เนื้อหา** ของ workflow PO/Tester/Senior/Refactor ที่เอกสารนั้นบรรยายไว้
 
-## Goal
+## เป้าหมาย
 
-Replace the old PO-orchestrated Master-Test-Case bureaucracy with a lifecycle-stage workflow (`Define → Plan → Build → Verify → Review → Ship`), modeled on `addyosmani/agent-skills`, while keeping the parts of the old flow that are a genuine strength (strict AC traceability, a dedicated test-writing role separate from implementation), fixing the React-Native hardcoding identified during the plugin migration, and adding Jira + git integration the old flow never had.
+แทนที่ระบบ Master-Test-Case แบบเดิมที่ PO เป็น orchestrator ด้วย workflow แบบ lifecycle stage (`Define → Plan → Build → Verify → Review → Ship`) โดยอ้างอิงจาก `addyosmani/agent-skills` พร้อมทั้งเก็บส่วนที่เป็นจุดแข็งจริงของ flow เดิมไว้ (การ traceability ของ AC ที่เข้มงวด, การแยกบทบาทเขียน test ออกจากบทบาท implement) แก้ปัญหาการ hardcode React Native ที่เจอตอนย้าย plugin และเพิ่มการเชื่อมต่อ Jira + git ที่ flow เดิมไม่มี
 
-## Why change
+## ทำไมต้องเปลี่ยน
 
-A side-by-side review of `addyosmani/agent-skills` against our own `po-agent`/`tester-agent`/`senior-full-stack-agent`/`refactor-agent` flow surfaced:
+จากการเทียบ `addyosmani/agent-skills` กับ flow ของเราเอง (`po-agent`/`tester-agent`/`senior-full-stack-agent`/`refactor-agent`) พบว่า:
 
-- Our Define/Plan/Build/Verify are *heavier* (Master TC ↔ Task TC traceability) but hardcoded to React Native/JS — not usable for backend or other stacks
-- We have **no Review stage at all** (no 5-axis review, no security/performance check) and **no Ship stage** (no GO/NO-GO decision, no rollback plan) — addyosmani's pack covers both
-- addyosmani's task slicing is stack-agnostic vertical slices; ours (`No-API Workflow`, mock-then-swap) was horizontal and RN-specific
+- Define/Plan/Build/Verify ของเรา "หนักกว่า" (มี Master TC ↔ Task TC traceability) แต่ hardcode ไว้เฉพาะ React Native/JS — ใช้กับงาน backend หรือ stack อื่นไม่ได้
+- เรา**ไม่มี Review stage เลย** (ไม่มี 5-axis review, ไม่มี security/performance check) และ**ไม่มี Ship stage** (ไม่มี GO/NO-GO decision, ไม่มี rollback plan) — ของ addyosmani มีทั้งสองอย่าง
+- การแบ่ง task ของ addyosmani เป็น vertical slice ที่ไม่ผูก stack ส่วนของเรา (`No-API Workflow` แบบ mock แล้วค่อยสวอป) เป็น horizontal และเจาะจง RN
 
-This redesign keeps our traceability/role-separation strengths, drops the RN-only assumptions, and fills the Review/Ship gap by adapting three of addyosmani's specialist personas.
+การปรับครั้งนี้เก็บจุดแข็งเรื่อง traceability/แยกบทบาทไว้ ตัดสมมติฐานที่ผูกกับ RN ออก และเติม gap ของ Review/Ship ด้วยการปรับ persona เฉพาะทาง 3 ตัวจาก addyosmani มาใช้
 
-## Agent roster (7 total — 3 new)
+## รายชื่อ Agent (รวม 7 ตัว — ใหม่ 3 ตัว)
 
-| Agent | Status | Role |
+| Agent | สถานะ | บทบาท |
 |---|---|---|
-| `po-agent` | Rewritten | Orchestrates the full 6-stage loop end to end when invoked via `/po-workflow` (still opt-in — does not run automatically every session) |
-| `tester-agent` | Rewritten | Writes failing tests from a task's AC before implementation (RED); runs regression checks at Verify |
-| `senior-full-stack-agent` | Rewritten | Implements to pass tests (GREEN) — backend then frontend, any stack per `project-blueprint.md`; RN-specific detail (styled-components, testID) moves to existing skills, referenced conditionally |
-| `refactor-agent` | Rewritten | Fixes failures from Verify/Review without changing behavior — no longer JS/ESLint-only; reads the project's actual lint/test tooling from `project-blueprint.md` |
-| `code-reviewer` | **New** | 5-axis review (correctness, readability, architecture, security, performance) — adapted stack-agnostic from `addyosmani/agent-skills` |
-| `security-auditor` | **New** | OWASP-style audit (secrets, auth/authz, dependency CVEs) — adapted from `addyosmani/agent-skills` |
-| `test-engineer` | **New** | Test coverage gap analysis (happy path, edge cases, error paths, concurrency) — used in the Ship fan-out; distinct from `tester-agent`'s per-task RED-writing role |
+| `po-agent` | เขียนใหม่ | orchestrate ทั้ง 6 stage ครบวงจรเมื่อเรียกผ่าน `/po-workflow` (ยังเป็น opt-in — ไม่รันอัตโนมัติทุก session) |
+| `tester-agent` | เขียนใหม่ | เขียน test ที่ต้อง fail จาก AC ของ task ก่อน implement (RED); รัน regression check ตอน Verify |
+| `senior-full-stack-agent` | เขียนใหม่ | Implement ให้ผ่าน test (GREEN) — ทำ backend ก่อนแล้วค่อย frontend ไม่จำกัด stack ตาม `project-blueprint.md`; รายละเอียดที่เจาะจง RN (styled-components, testID) ย้ายไปอยู่ใน skill ที่มีอยู่แล้ว อ้างอิงแบบมีเงื่อนไข |
+| `refactor-agent` | เขียนใหม่ | แก้ปัญหาจาก Verify/Review โดยไม่เปลี่ยน behavior — ไม่จำกัดแค่ JS/ESLint อีกต่อไป อ่านเครื่องมือ lint/test จริงของโปรเจกต์จาก `project-blueprint.md` |
+| `code-reviewer` | **ใหม่** | Review 5 มุมมอง (correctness, readability, architecture, security, performance) — ปรับจาก `addyosmani/agent-skills` ให้ไม่ผูก stack |
+| `security-auditor` | **ใหม่** | ตรวจแบบ OWASP-style (secrets, auth/authz, dependency CVE) — ปรับจาก `addyosmani/agent-skills` |
+| `test-engineer` | **ใหม่** | วิเคราะห์ gap ของ test coverage (happy path, edge case, error path, concurrency) — ใช้ตอน fan-out ของ Ship; แยกจากบทบาทเขียน test (RED) ต่อ task ของ `tester-agent` |
 
 ## Commands
 
-- `/po-workflow` — rewritten to run the full 6-stage loop below, replacing its old Master-TC-based behavior. Still opt-in.
-- `/spec`, `/plan`, `/build` (with `auto` mode), `/verify`, `/review`, `/ship` — new standalone commands, one per stage, usable independently of `/po-workflow`
-- `/init-project-docs` — unchanged in mechanism; `project-blueprint.md` template gains two new fields (see Template updates below)
+- `/po-workflow` — เขียนใหม่ให้รันครบ 6 stage ด้านล่างนี้ แทนพฤติกรรมแบบ Master-TC เดิม ยังเป็น opt-in เหมือนเดิม
+- `/spec`, `/plan`, `/build` (มี mode `auto`), `/verify`, `/review`, `/ship` — command แยกใหม่ ต่อ 1 stage ใช้แยกจาก `/po-workflow` ได้
+- `/init-project-docs` — กลไกไม่เปลี่ยน; template `project-blueprint.md` เพิ่ม 2 field ใหม่ (ดู Template updates ด้านล่าง)
 
-## Stage-by-stage design
+## รายละเอียดแต่ละ Stage
 
 ### 1. Define
 
-- If no Jira card was given: ask whether one exists. If the user has none, proceed directly from their request — do not block.
-- If a card exists: read it completely — description, images/attachments, **all** comments — via Atlassian MCP or pasted content. This extends (does not replace) the existing always-on **Jira Card Read Gate** hook rule: that rule already blocks code changes when a linked card can't be read; this stage adds that after a successful read, the agent must *summarize its understanding and get explicit user confirmation* before writing `SPEC.md` — it must not go straight from reading to speccing.
-- Anything ambiguous or missing in the card: ask the user. Never fill gaps by assumption.
-- For the technical parts of the spec (tech stack, project structure, code style, testing strategy, boundaries): pull baseline values from `docs/codebase-docs/project-blueprint.md` first (if the project has run `/init-project-docs`); only ask the user for what the blueprint doesn't cover or what's specific to this task.
-- Output: `SPEC.md` at the project root.
+- ถ้าไม่มีการ์ด Jira มาให้: ถามก่อนว่ามีการ์ดไหม ถ้า user ไม่มีให้ไปต่อจากคำขอที่พูดตรงๆ ได้เลย — ไม่ block งาน
+- ถ้ามีการ์ด: อ่านให้ครบทั้งหมด — description, รูปภาพ/attachment, comment **ทุกอัน** — ผ่าน Atlassian MCP หรือเนื้อหาที่ paste มา ส่วนนี้เป็นการ**ขยาย** (ไม่ใช่แทนที่) กฎ **Jira Card Read Gate** ที่ทำงานอยู่แล้วแบบ always-on: กฎเดิม block การแก้โค้ดถ้าอ่านการ์ดที่ลิงก์มาไม่ได้อยู่แล้ว; stage นี้เพิ่มว่าหลังอ่านสำเร็จแล้ว agent ต้อง **สรุปความเข้าใจและให้ user confirm ชัดเจนก่อน** จึงเขียน `SPEC.md` ได้ — ห้ามอ่านจบแล้วเขียนสเปกต่อทันที
+- จุดไหนใน Jira ที่คลุมเครือ/ขาดข้อมูล: ต้องถาม user ห้ามเติมด้วยการสมมติเอง
+- ส่วนสเปกด้านเทคนิค (tech stack, project structure, code style, testing strategy, boundaries): ดึงค่า baseline จาก `docs/codebase-docs/project-blueprint.md` ก่อน (ถ้าโปรเจกต์รัน `/init-project-docs` แล้ว) ถามเฉพาะส่วนที่ blueprint ไม่ครอบคลุมหรือเจาะจงกับงานนี้
+- ผลลัพธ์: `SPEC.md` ที่ root โปรเจกต์
 
 ### 2. Plan
 
-- Read `SPEC.md` + `project-blueprint.md` + relevant existing code. Enter plan mode (read-only, no edits).
-- Slice work into **vertical, fullstack tasks**. Each task is internally ordered:
-  1. Analyze what data/flags the frontend actually needs
-  2. Build the backend to match
-  3. Build the frontend and integrate with the real backend just built (no mocking, no waiting)
-  4. End with the user checking the UI against what was wanted
-- Each task carries AC + verification steps (no Master-TC-ID mapping — that traceability layer is dropped; see "Dropped from the old flow").
-- If a Jira card exists: create matching **subtasks under the main card** in Jira, one per planned task.
-- Present the plan to the user for approval before proceeding.
-- Save to `tasks/plan.md` + `tasks/todo.md` (real files, so a plan survives a session boundary).
+- อ่าน `SPEC.md` + `project-blueprint.md` + code ที่เกี่ยวข้อง เข้า plan mode (read-only ไม่แก้ไฟล์)
+- แบ่งงานเป็น **vertical slice แบบ fullstack** แต่ละ task เรียงลำดับภายในตัวเองเป็น:
+  1. วิเคราะห์ว่า frontend ต้องการข้อมูล/flag อะไรจริงๆ
+  2. ทำ backend ให้ตรงตามที่วิเคราะห์ไว้
+  3. ทำ frontend + integrate กับ backend จริงที่ทำเสร็จในตัว task เดียวกัน (ไม่ mock ไม่รอ)
+  4. จบด้วยให้ user เช็ค UI ว่าตรงกับที่ต้องการไหม
+- แต่ละ task มี AC + verification step (ตัด Master-TC-ID mapping ออก — ดูหัวข้อ "สิ่งที่ตัดออกจาก flow เก่า")
+- ถ้ามีการ์ด Jira: สร้าง **subtask ใต้การ์ดหลัก** ใน Jira ตาม task ที่วางแผนไว้ 1 subtask ต่อ 1 task
+- เสนอ plan ให้ user approve ก่อนไปต่อ
+- Save เป็นไฟล์จริง `tasks/plan.md` + `tasks/todo.md` (เพื่อให้ plan อยู่ข้าม session ได้)
 
 ### 3. Build
 
-- Before the first task starts: create a git branch off `develop`, named `feature/{JIRA-KEY}:{short-name}` (or `feature/{short-name}` if there's no Jira card). All commits for every task in this plan land on this one branch — one branch per plan, not per task.
-- Per task:
-  1. `@tester-agent` writes a failing test from the task's AC (RED) — backend side first
-  2. `@senior-full-stack-agent` implements the backend to pass it (GREEN)
-  3. `@tester-agent` writes the frontend/integration test
-  4. `@senior-full-stack-agent` implements the frontend and integrates with the real backend
-  5. Run the full test suite (regression) + build/compile check (commands read from `project-blueprint.md`, both frontend and backend)
-  6. Commit onto the feature branch, message referencing the Jira card
-  7. If a Jira card exists: mark that task's Jira **subtask** done and update the **main card's** status
-  8. Mark the task complete
-- `/build` (default): one task, then stop.
-- `/build auto`: single up-front approval for the whole plan, then every task runs unattended in dependency order — still full RED→GREEN→regression→commit per task. Stops only when a test/build failure has no obvious fix, the spec is ambiguous, or a task is high-risk/irreversible (auth, destructive migration, payments, deploys, secrets).
+- ก่อนเริ่ม task แรก: สร้าง git branch จาก `develop` ชื่อ `feature/{JIRA-KEY}:{short-name}` (หรือ `feature/{short-name}` ถ้าไม่มีการ์ด Jira) — commit ของทุก task ใน plan นี้เข้า branch เดียวกันนี้ทั้งหมด (1 branch ต่อ 1 plan ไม่ใช่ต่อ task)
+- ต่อ task:
+  1. `@tester-agent` เขียน test ที่ต้อง fail จาก AC ของ task (RED) — เริ่มจากฝั่ง backend
+  2. `@senior-full-stack-agent` implement backend ให้ผ่าน (GREEN)
+  3. `@tester-agent` เขียน test สำหรับ frontend/integration
+  4. `@senior-full-stack-agent` implement frontend + integrate กับ backend จริง
+  5. รัน full test suite (regression) + build/compile check (คำสั่งอ่านจาก `project-blueprint.md` ทั้ง frontend และ backend)
+  6. Commit เข้า feature branch พร้อมข้อความอ้างถึงการ์ด Jira
+  7. ถ้ามีการ์ด Jira: mark **subtask** ของ task นั้นเป็น done และอัปเดต status ของ**การ์ดหลัก**
+  8. Mark task complete
+- `/build` (ค่าเริ่มต้น): ทำ 1 task แล้วหยุด
+- `/build auto`: ขอ approve ครั้งเดียวสำหรับ plan ทั้งหมด แล้วรันทุก task ต่อเนื่องตาม dependency order — ยังผ่าน RED→GREEN→regression→commit ครบทุก task หยุดเฉพาะเมื่อ test/build แก้ไม่ได้ชัดเจน, spec คลุมเครือ, หรือ task ที่ high-risk/irreversible (auth, migration ทำลายข้อมูล, payment, deploy, secrets)
 
 ### 4. Verify
 
-- Runs once, after every task in the plan is complete (not per task) — equivalent to the old flow's Final Regression.
-- `@tester-agent` runs the full test suite across the whole project (frontend + backend) plus a full build/compile check.
-- The user checks the UI of the complete feature against `SPEC.md`/the original Jira card.
-- FAIL → `@refactor-agent` fixes without changing behavior → re-verify.
-- PASS → proceed to Review.
+- รันครั้งเดียวหลัง task ทุกตัวใน plan เสร็จแล้ว (ไม่ใช่ต่อ task) — เทียบเท่า Final Regression ของ flow เดิม
+- `@tester-agent` รัน full test suite ทั้งโปรเจกต์ (frontend + backend) พร้อม build/compile check เต็มรูปแบบ
+- User เช็ค UI ของฟีเจอร์ทั้งหมดเทียบกับ `SPEC.md`/การ์ด Jira ต้นฉบับ
+- FAIL → `@refactor-agent` แก้โดยไม่เปลี่ยน behavior → verify ซ้ำ
+- PASS → ไป Review
 
 ### 5. Review
 
-- `@code-reviewer` runs the 5-axis review (correctness, readability, architecture, security, performance), delegating the security axis to `@security-auditor` (OWASP-style pass).
-- Findings are categorized Critical / Important / Suggestion with file:line references.
-- Critical findings must be fixed (routed back to `@senior-full-stack-agent` or `@refactor-agent`) and re-reviewed before proceeding.
-- Important/Suggestion findings are reported but do not block moving to Ship.
+- `@code-reviewer` รีวิว 5 มุมมอง (correctness, readability, architecture, security, performance) โดยส่งมุม security ให้ `@security-auditor` ตรวจแบบ OWASP-style
+- จัด severity ของ finding เป็น Critical / Important / Suggestion พร้อม file:line
+- Critical ต้องแก้ก่อน (ส่งกลับ `@senior-full-stack-agent` หรือ `@refactor-agent`) แล้ว review ซ้ำก่อนไปต่อ
+- Important/Suggestion แจ้งไว้ในรายงานแต่ไม่ block การไป Ship
 
 ### 6. Ship
 
-- Parallel fan-out: `@code-reviewer`, `@security-auditor`, `@test-engineer` run concurrently, each producing an independent report.
-- Merge in the main session: Code Quality, Security (any Critical/High security finding becomes a launch blocker), Performance, Accessibility, Infrastructure (env vars, migrations, monitoring, feature flags), Documentation.
-- Produce a single **GO / NO-GO** decision with Blockers, Recommended fixes, Acknowledged risks, and a **mandatory rollback plan** (trigger conditions, procedure, recovery target) before any GO.
-- Skip the fan-out only when the diff touches 2 files or fewer, is under 50 lines, and doesn't touch auth/payments/data/config — otherwise always fan out.
+- Fan-out พร้อมกัน: `@code-reviewer`, `@security-auditor`, `@test-engineer` รันพร้อมกัน แต่ละตัวออกรายงานอิสระ
+- รวมผลใน main session: Code Quality, Security (finding Critical/High ด้าน security → กลายเป็น launch blocker), Performance, Accessibility, Infrastructure (env vars, migration, monitoring, feature flags), Documentation
+- สรุปเป็น **GO / NO-GO** เดียว พร้อม Blockers, Recommended fixes, Acknowledged risks และ **rollback plan (บังคับ)** (trigger condition, ขั้นตอน, recovery target) ก่อน GO ทุกครั้ง
+- Skip fan-out ได้เฉพาะ diff ที่แตะไม่เกิน 2 ไฟล์, ไม่เกิน 50 บรรทัด, และไม่แตะ auth/payment/data/config — นอกนั้น fan-out เสมอ
 
-## Jira integration
+## การเชื่อมต่อ Jira
 
-- **Read** (Define): existing always-on gate, extended to require a confirmed understanding-summary before speccing.
-- **Write** (Plan): create one Jira subtask per planned task under the main card.
-- **Status sync** (Build): update both the task's own subtask and the main card's status as work progresses.
-- If no card was ever provided (per Define's "ask, then proceed if none"), none of the write/sync steps apply — everything stays local to `tasks/plan.md`.
+- **อ่าน** (Define): ใช้ always-on gate ที่มีอยู่แล้ว เพิ่มให้ต้องสรุปความเข้าใจและ confirm ก่อนเขียนสเปก
+- **เขียน** (Plan): สร้าง Jira subtask 1 อันต่อ 1 task ที่วางแผนไว้ ใต้การ์ดหลัก
+- **ซิงค์ status** (Build): อัปเดตทั้ง subtask ของ task นั้นและ status ของการ์ดหลักตามความคืบหน้า
+- ถ้าไม่มีการ์ดมาตั้งแต่ต้น (ตามที่ Define ตัดสินใจ "ถามแล้วไม่มีก็ไปต่อ") ขั้นตอนเขียน/ซิงค์ทั้งหมดนี้จะไม่เกิดขึ้น — ทุกอย่างอยู่ใน `tasks/plan.md` ในเครื่องเท่านั้น
 
-## Git branching
+## Git Branching
 
-- One feature branch per plan, created from `develop` before the first Build task, not one branch per task.
-- Naming: `feature/{JIRA-KEY}:{short-name}`, or `feature/{short-name}` when there's no Jira card.
-- All of a plan's commits land on that branch; branch name and commit messages both reference the Jira card when one exists.
+- 1 feature branch ต่อ 1 plan สร้างจาก `develop` ก่อน task แรกของ Build ไม่ใช่ 1 branch ต่อ 1 task
+- ชื่อ: `feature/{JIRA-KEY}:{short-name}` หรือ `feature/{short-name}` ถ้าไม่มีการ์ด Jira
+- Commit ทั้งหมดของ plan นั้นเข้า branch เดียวกัน; ชื่อ branch และ commit message อ้างถึงการ์ด Jira เมื่อมีการ์ดอยู่
 
-## Template updates
+## การอัปเดต Template
 
-`docs/templates/project-blueprint.md` (and therefore every project's scaffolded `project-blueprint.md`) gains two new fields so agents stop hardcoding tool commands:
+`docs/templates/project-blueprint.md` (และ `project-blueprint.md` ที่ scaffold ไปแต่ละโปรเจกต์) เพิ่ม 2 field ใหม่ เพื่อไม่ให้ agent hardcode คำสั่งเครื่องมือเอง:
 
-- **Commands** — actual lint / test / build commands for this project (frontend and backend separately if they differ)
-- **Git workflow** — base branch name (default assumption: `develop`) and branch naming convention, in case a project doesn't follow the `feature/{JIRA-KEY}:{name}` default
+- **Commands** — คำสั่ง lint / test / build จริงของโปรเจกต์นี้ (แยก frontend/backend ถ้าต่างกัน)
+- **Git workflow** — ชื่อ base branch (ค่าเริ่มต้นที่สมมติไว้: `develop`) และ convention การตั้งชื่อ branch เผื่อโปรเจกต์ไม่ได้ใช้ default `feature/{JIRA-KEY}:{name}`
 
-## Dropped from the old flow
+## สิ่งที่ตัดออกจาก flow เก่า
 
-- Master Test Case ID system (`TC-01`, `TC-T01`, PASS/FAIL emoji report templates) — replaced by plain AC + verification steps per task
-- `No-API Workflow` (mock-contract, build-UI-first-then-swap-in-real-API pattern) — replaced by the backend-first vertical slice in Plan/Build, since a fullstack agent no longer needs to wait on a separate API delivery
-- Rigid delegation syntax blocks (`@tester-agent: เตรียม Task Test Cases สำหรับ Task [N] ...`) — superseded by the stage-based flow above; agents still communicate via `@mention` but without the old TC-ID-keyed message format
+- ระบบ Master Test Case ID (`TC-01`, `TC-T01`, template รายงาน PASS/FAIL แบบ emoji) — แทนที่ด้วย AC + verification step ธรรมดาต่อ task
+- `No-API Workflow` (mock-contract, ทำ UI ก่อนแล้วค่อยสวอปเป็น API จริงทีหลัง) — แทนที่ด้วย vertical slice แบบทำ backend ก่อนใน Plan/Build เพราะ fullstack agent ไม่ต้องรอการส่ง API แยกต่างหากอีกแล้ว
+- Syntax การมอบหมายงานแบบตายตัว (`@tester-agent: เตรียม Task Test Cases สำหรับ Task [N] ...`) — ถูกแทนที่ด้วย flow แบบ stage ด้านบน; agent ยังคุยกันผ่าน `@mention` แต่ไม่ใช้รูปแบบข้อความที่ผูกกับ TC-ID แบบเดิม
 
-## Impact on existing files
+## ผลกระทบต่อไฟล์เดิม
 
-- Rewrite: `agents/po-agent.md`, `agents/tester-agent.md`, `agents/senior-full-stack-agent.md`, `agents/refactor-agent.md`
-- New: `agents/code-reviewer.md`, `agents/security-auditor.md`, `agents/test-engineer.md`
-- Rewrite: `commands/po-workflow.md`
-- New: `commands/spec.md`, `commands/plan.md`, `commands/build.md`, `commands/verify.md`, `commands/review.md`, `commands/ship.md`
-- Update: `docs/templates/project-blueprint.md` (add Commands + Git workflow fields)
-- Update: `hooks/always-on-rules.md` (Jira Card Read Gate section — extend with the "summarize and confirm before speccing" requirement)
-- No change needed: `commands/init-project-docs.md` mechanism, skills (`ui-guide-template`, `codeing-guide`, etc. stay as-is, still trigger-based)
+- เขียนใหม่: `agents/po-agent.md`, `agents/tester-agent.md`, `agents/senior-full-stack-agent.md`, `agents/refactor-agent.md`
+- ใหม่: `agents/code-reviewer.md`, `agents/security-auditor.md`, `agents/test-engineer.md`
+- เขียนใหม่: `commands/po-workflow.md`
+- ใหม่: `commands/spec.md`, `commands/plan.md`, `commands/build.md`, `commands/verify.md`, `commands/review.md`, `commands/ship.md`
+- อัปเดต: `docs/templates/project-blueprint.md` (เพิ่ม field Commands + Git workflow)
+- อัปเดต: `hooks/always-on-rules.md` (ส่วน Jira Card Read Gate — เพิ่มข้อบังคับ "สรุปและ confirm ก่อนเขียนสเปก")
+- ไม่ต้องแก้: กลไก `commands/init-project-docs.md`, skill ต่างๆ (`ui-guide-template`, `codeing-guide` ฯลฯ คงเดิม ยังเป็น trigger-based)
 
-## Testing / rollout plan
+## Testing / Rollout Plan
 
-1. Dry-run `/spec` → `/plan` → `/build` on one small real feature with a real Jira card, in a throwaway test project, verifying: card read + summary-confirm gate, subtask creation, branch creation off `develop`, per-task subtask/card status sync
-2. Dry-run the same flow with **no** Jira card, confirming Define proceeds without blocking and no Jira write calls are attempted
-3. Run `/build auto` on a multi-task plan, confirming it stops on a deliberately-introduced high-risk task (e.g. a migration) and resumes correctly after approval
-4. Run `/verify` → `/review` → `/ship` on the completed feature; confirm the 3-way fan-out at Ship runs concurrently (not sequentially) and produces a single GO/NO-GO with a rollback plan
-5. Confirm `refactor-agent` and the review/audit agents correctly pull lint/test commands from `project-blueprint.md` rather than assuming ESLint/Jest, using a non-JS test project if available
+1. Dry-run `/spec` → `/plan` → `/build` กับฟีเจอร์เล็กจริง 1 อันที่มีการ์ด Jira จริง ในโปรเจกต์ทดลอง ตรวจ: gate อ่านการ์ด+สรุป-confirm, การสร้าง subtask, การสร้าง branch จาก `develop`, การซิงค์ status subtask/การ์ดต่อ task
+2. Dry-run flow เดิม**ไม่มี**การ์ด Jira ยืนยันว่า Define ไปต่อได้โดยไม่ block และไม่มีการเรียก Jira write ใดๆ
+3. รัน `/build auto` กับ plan ที่มีหลาย task ยืนยันว่าหยุดที่ task high-risk ที่ตั้งใจใส่ไว้ (เช่น migration) และ resume ถูกต้องหลัง approve
+4. รัน `/verify` → `/review` → `/ship` กับฟีเจอร์ที่เสร็จแล้ว ยืนยันว่า fan-out 3 ทางของ Ship รันพร้อมกันจริง (ไม่ใช่ทีละตัว) และออก GO/NO-GO เดียวพร้อม rollback plan
+5. ยืนยันว่า `refactor-agent` และ agent ตรวจ/audit ดึงคำสั่ง lint/test จาก `project-blueprint.md` ถูกต้อง ไม่ได้สมมติว่าเป็น ESLint/Jest เสมอ — ทดสอบกับโปรเจกต์ที่ไม่ใช่ JS ถ้ามี
 
-## Explicitly out of scope
+## สิ่งที่ไม่อยู่ในสโคปนี้ชัดเจน
 
-- Multi-branch-per-task strategies (one branch per plan only)
-- Automatic Jira status transitions beyond In Progress / Done (no custom workflow states)
-- Any change to the plugin distribution mechanism itself (marketplace/plugin.json) — covered by the prior migration design doc
+- กลยุทธ์ branch หลายอันต่อ task (มีแค่ 1 branch ต่อ plan เท่านั้น)
+- การเปลี่ยน status Jira อัตโนมัติเกินกว่า In Progress / Done (ไม่มี custom workflow state)
+- การเปลี่ยนแปลงกลไกการแจกจ่าย plugin เอง (marketplace/plugin.json) — เอกสารเรื่องนี้อยู่ใน migration design doc ฉบับก่อนแล้ว
