@@ -1,6 +1,6 @@
 # my-claude-rules
 
-Personal dev-workflow kit distributed as a native **Claude Code plugin** — install once, get 4 agents, 12 skills, 2 slash commands, and an always-on safety hook, with zero files copied into your project.
+Personal dev-workflow kit distributed as a native **Claude Code plugin** — install once, get 7 agents, 12 skills, 8 slash commands, and an always-on safety hook, with zero files copied into your project.
 
 ---
 
