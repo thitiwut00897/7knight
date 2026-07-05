@@ -61,7 +61,7 @@
 
 ### 3. Build
 
-- ก่อนเริ่ม task แรก: สร้าง git branch จาก `develop` ชื่อ `feature/{JIRA-KEY}:{short-name}` (หรือ `feature/{short-name}` ถ้าไม่มีการ์ด Jira) — commit ของทุก task ใน plan นี้เข้า branch เดียวกันนี้ทั้งหมด (1 branch ต่อ 1 plan ไม่ใช่ต่อ task)
+- ก่อนเริ่ม task แรก: สร้าง git branch จาก `develop` ชื่อ `feature/{JIRA-KEY}/{short-name}` (หรือ `feature/{short-name}` ถ้าไม่มีการ์ด Jira) — commit ของทุก task ใน plan นี้เข้า branch เดียวกันนี้ทั้งหมด (1 branch ต่อ 1 plan ไม่ใช่ต่อ task)
 - ต่อ task:
   1. `@tester-agent` เขียน test ที่ต้อง fail จาก AC ของ task (RED) — เริ่มจากฝั่ง backend
   2. `@senior-full-stack-agent` implement backend ให้ผ่าน (GREEN)
@@ -106,7 +106,7 @@
 ## Git Branching
 
 - 1 feature branch ต่อ 1 plan สร้างจาก `develop` ก่อน task แรกของ Build ไม่ใช่ 1 branch ต่อ 1 task
-- ชื่อ: `feature/{JIRA-KEY}:{short-name}` หรือ `feature/{short-name}` ถ้าไม่มีการ์ด Jira
+- ชื่อ: `feature/{JIRA-KEY}/{short-name}` หรือ `feature/{short-name}` ถ้าไม่มีการ์ด Jira
 - Commit ทั้งหมดของ plan นั้นเข้า branch เดียวกัน; ชื่อ branch และ commit message อ้างถึงการ์ด Jira เมื่อมีการ์ดอยู่
 
 ## การอัปเดต Template
@@ -114,7 +114,7 @@
 `docs/templates/project-blueprint.md` (และ `project-blueprint.md` ที่ scaffold ไปแต่ละโปรเจกต์) เพิ่ม 2 field ใหม่ เพื่อไม่ให้ agent hardcode คำสั่งเครื่องมือเอง:
 
 - **Commands** — คำสั่ง lint / test / build จริงของโปรเจกต์นี้ (แยก frontend/backend ถ้าต่างกัน)
-- **Git workflow** — ชื่อ base branch (ค่าเริ่มต้นที่สมมติไว้: `develop`) และ convention การตั้งชื่อ branch เผื่อโปรเจกต์ไม่ได้ใช้ default `feature/{JIRA-KEY}:{name}`
+- **Git workflow** — ชื่อ base branch (ค่าเริ่มต้นที่สมมติไว้: `develop`) และ convention การตั้งชื่อ branch เผื่อโปรเจกต์ไม่ได้ใช้ default `feature/{JIRA-KEY}/{name}`
 
 ## สิ่งที่ตัดออกจาก flow เก่า
 

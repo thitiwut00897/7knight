@@ -10,7 +10,7 @@ argument-hint: [auto (รันทุก task) หรือเว้นว่า
 1. ตรวจว่ามี `tasks/plan.md` แล้ว — ถ้าไม่มี บอก user ให้รัน `/plan` ก่อน
 2. อ่าน `docs/codebase-docs/project-blueprint.md` § 7 Git Workflow เพื่อรู้ base branch (ปกติคือ `develop`)
 3. สร้าง branch ใหม่จาก base branch นั้น ชื่อ:
-   - `feature/{JIRA-KEY}:{short-name}` ถ้า plan นี้มีการ์ด Jira (key มาจาก `tasks/plan.md`)
+   - `feature/{JIRA-KEY}/{short-name}` ถ้า plan นี้มีการ์ด Jira (key มาจาก `tasks/plan.md`)
    - `feature/{short-name}` ถ้าไม่มีการ์ด
 4. Checkout เข้า branch ใหม่นี้ — commit ทุก task ของ plan นี้จะเข้า branch เดียวกันนี้เท่านั้น
 

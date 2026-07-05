@@ -80,4 +80,4 @@
 | รายการ | ค่า |
 |---|---|
 | Base branch | `[e.g. develop]` |
-| Branch naming | `[e.g. feature/{JIRA-KEY}:{short-name} — default ถ้าไม่ระบุ]` |
+| Branch naming | `[e.g. feature/{JIRA-KEY}/{short-name} — default ถ้าไม่ระบุ]` |
