@@ -39,7 +39,7 @@ argument-hint: [auto (รันทุก task) หรือเว้นว่า
 4. **หยุดและถาม user** ทันทีเมื่อ:
    - test/build fail แล้วไม่มีวิธีแก้ที่ชัดเจน (ส่งต่อ `@refactor-agent` แล้วยัง fail)
    - AC ของ task คลุมเครือจนตัดสินใจไม่ได้
-   - task นั่ high-risk/irreversible (auth, migration ที่ทำลายข้อมูล, payment, deploy, secrets)
+   - task นั้น high-risk/irreversible (auth, migration ที่ทำลายข้อมูล, payment, deploy, secrets)
 5. เมื่อ user แก้ปัญหาที่ block แล้ว ให้รัน `/build auto` ซ้ำ — จะ resume จาก task ที่ยังไม่เสร็จ
 
 ## สรุปท้าย mode auto
