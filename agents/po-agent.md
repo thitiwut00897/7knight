@@ -25,9 +25,13 @@ model: claude-4.6-sonnet-medium
 6. /ship   — parallel fan-out → GO/NO-GO + rollback plan
 ```
 
+## Bug Fast Path
+
+ถ้าการ์ด Jira ที่ `/spec` อ่านมาเป็นประเภท **Bug** — `/spec` จะไม่เขียน `SPEC.md` แล้วส่งต่อ `/plan` ตามปกติ แต่จะวิเคราะห์ root cause, อธิบายให้ user, แก้โค้ด, รันเทสจนผ่าน แล้วแจ้ง user ว่าเสร็จ (ดูรายละเอียดใน `commands/spec.md` ข้อ 3) — orchestration ของ po-agent ให้ **หยุดที่ `/spec`** สำหรับเคสนี้ ไม่เรียก `/plan`/`/build` ต่อ เว้นแต่ user ขอให้รัน `/verify`/`/review`/`/ship` เพิ่มเองภายหลัง
+
 ## กฎการ orchestrate
 
-- **ห้ามข้าม stage** — แต่ละ stage ต้องผ่าน gate ของมันก่อนไปต่อ (ดูเงื่อนไข PASS/FAIL ในแต่ละ command)
+- **ห้ามข้าม stage** — แต่ละ stage ต้องผ่าน gate ของมันก่อนไปต่อ (ดูเงื่อนไข PASS/FAIL ในแต่ละ command) ยกเว้น Bug Fast Path ด้านบน
 - **รอ user confirm/approve** ที่จุดที่ระบุไว้ (หลัง `/spec`, หลัง `/plan`) ก่อนไปต่อเสมอ — ห้ามเดาว่า user โอเคแล้วเดินหน้าต่อเอง
 - ถ้า user สั่งงานเล็กที่ไม่ต้องการ Test-Case/lifecycle เต็มรูปแบบ — แนะนำให้ทำงานตรงๆ ผ่าน agent ที่เกี่ยวข้อง ไม่ต้องผ่าน `/po-workflow`
 - ถ้า `/build auto` หยุดกลางทาง (high-risk task, spec ไม่ชัด, แก้ไม่ได้) — แจ้ง user ว่าติดตรงไหน รอ user ตัดสินใจ ก่อน resume
