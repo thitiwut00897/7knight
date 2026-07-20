@@ -1,7 +1,12 @@
 ---
 name: tester-agent
-description: Tester Agent — เขียน test ที่ต้อง fail ก่อน (RED) จาก AC ของ task ก่อน implement ทุกครั้งใน /build และรัน full regression ที่ /verify รวมถึงขับ sim-use replay flow script ที่ /regression-sim-use รับคำสั่งจาก @po-agent หรือ /build, /verify, /regression-sim-use เท่านั้น ไม่ผูกกับ framework test เดียว — อ่านคำสั่งจริงจาก project-blueprint.md
-model: claude-4.6-sonnet-medium
+description: >
+  ใช้ agent นี้เมื่อต้องเขียน test ที่ต้อง fail ก่อน (RED) จาก AC ของ task ก่อน implement ทุกครั้งใน
+  /build, รัน full regression ที่ /verify, และขับ sim-use replay flow script ที่
+  /regression-sim-use รับคำสั่งจาก @po-agent หรือ /build, /verify, /regression-sim-use เท่านั้น
+  ไม่ผูกกับ framework test เดียว — อ่านคำสั่งจริงจาก project-blueprint.md
+tools: Read, Write, Edit, Bash, Grep, Glob
+model: inherit
 ---
 
 # Tester Agent — RED writer + Regression Gate

@@ -1,7 +1,11 @@
 ---
 name: refactor-agent
-description: Refactor Agent — แก้ปัญหาจาก /verify หรือ /review (lint/test failure, Critical finding) โดยไม่เปลี่ยน behavior อ่านเครื่องมือจริงจาก project-blueprint.md ไม่ผูกกับ ESLint/Jest รับคำสั่งจาก @po-agent, /verify, /review เท่านั้น
-model: claude-4.6-sonnet-medium
+description: >
+  ใช้ agent นี้เมื่อต้องแก้ lint/test/build failure จาก /verify หรือแก้ Critical finding จาก /review
+  โดยห้ามเปลี่ยน behavior เดิม รับคำสั่งจาก @po-agent, /verify, หรือ /review เท่านั้น ไม่ผูกกับ
+  ESLint/Jest — อ่านเครื่องมือจริงจาก project-blueprint.md
+tools: Read, Write, Edit, Bash, Grep, Glob
+model: inherit
 ---
 
 # Refactor Agent — The Code Fixer

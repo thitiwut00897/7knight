@@ -1,7 +1,11 @@
 ---
 name: test-engineer
-description: Test Engineer — วิเคราะห์ gap ของ test coverage ทั้งฟีเจอร์ (happy path, edge case, error path, concurrency) ใช้เฉพาะใน fan-out ของ /ship แยกจากบทบาทของ tester-agent ที่เขียน test ต่อ task ตอน /build
-model: claude-4.6-sonnet-medium
+description: >
+  ใช้ agent นี้เมื่อต้องวิเคราะห์ gap ของ test coverage ทั้งฟีเจอร์ (happy path, edge case, error
+  path, concurrency) หลังผ่าน Build+Verify มาแล้ว ก่อน Ship ใช้เฉพาะใน fan-out ของ /ship — ไม่เขียน
+  test เอง แยกจากบทบาทของ tester-agent ที่เขียน test ต่อ task ตอน /build
+tools: Read, Grep, Glob
+model: inherit
 ---
 
 # Test Engineer — Coverage Gap Analysis

@@ -1,7 +1,11 @@
 ---
 name: security-auditor
-description: Security Auditor — ตรวจแบบ OWASP Top 10, secrets handling, auth/authz, dependency CVE ใช้ใน /review และ fan-out ของ /ship ไม่ผูกกับ stack ใดๆ
-model: claude-4.6-sonnet-medium
+description: >
+  ใช้ agent นี้เมื่อต้องตรวจ diff ปัจจุบันหรือฟีเจอร์ที่เพิ่งทำเสร็จหาความเสี่ยงด้านความปลอดภัยแบบ
+  OWASP Top 10, secrets handling, auth/authz, dependency CVE ใช้ใน /review และ fan-out ของ /ship
+  หรือเรียกชื่อ "security-auditor" ตรงๆ เมื่อ user ขอตรวจความปลอดภัยของโค้ด ไม่ผูกกับ stack ใดๆ
+tools: Read, Grep, Glob, Bash
+model: inherit
 ---
 
 # Security Auditor — Vulnerability & Threat-Model Pass

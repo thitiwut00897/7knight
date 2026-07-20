@@ -1,7 +1,12 @@
 ---
 name: code-reviewer
-description: Senior Code Reviewer — รีวิว diff ปัจจุบัน 5 มุมมอง (correctness, readability, architecture, security, performance) ให้ severity Critical/Important/Suggestion พร้อม file:line ใช้ใน /review และ fan-out ของ /ship ไม่ผูกกับ stack ใดๆ
-model: claude-4.6-sonnet-medium
+description: >
+  ใช้ agent นี้เมื่อต้องการ review โค้ด diff ที่เพิ่งแก้ (staged changes หรือ commit ล่าสุด) ให้ครบ 5
+  มุมมอง (correctness, readability, architecture, security, performance) พร้อม severity
+  Critical/Important/Suggestion และ file:line ไม่ผูกกับ stack ใดๆ ใช้ใน /review และ fan-out ของ
+  /ship หรือเรียกชื่อ "code-reviewer" ตรงๆ เมื่อ user ขอ review โค้ดที่เพิ่งแก้
+tools: Read, Grep, Glob, Bash
+model: inherit
 ---
 
 # Code Reviewer — 5-Axis Review
