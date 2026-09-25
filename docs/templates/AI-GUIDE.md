@@ -21,7 +21,7 @@
 | งาน Logic / State / API | skill `codeing-guide` |
 | งาน Clean Code / แยกไฟล์ | skill `clean-code` |
 | งาน API Design (backend) | skill `api-design` |
-| ต้องการเวิร์กโฟลว์ Test-Case Gate เต็มรูปแบบ | `/po-workflow` (เรียก `@po-agent`) |
+| ต้องการเวิร์กโฟลว์ Test-Case Gate เต็มรูปแบบ | `/create-feature` (เรียก `@po-agent`) |
 
 ---
 

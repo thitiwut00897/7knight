@@ -44,15 +44,15 @@ argument-hint: [auto (รันทุก task) หรือเว้นว่า
 
 | Stack | เครื่องมือ auto-check | เงื่อนไขที่ใช้ได้ |
 |---|---|---|
-| Web | `webapp-testing` (Playwright) ขับ browser | ต้อง run local dev server ได้ (คำสั่ง start ดูจาก `project-blueprint.md` § 6) |
-| iOS | `ios-simulator-skill` ขับ iOS Simulator | ต้อง build app ขึ้น Simulator ได้ (`xcodebuild`/scheme จาก `project-blueprint.md` § 6) |
-| Stack อื่นที่ไม่มีเครื่องมือ automate UI (เช่น Android — ดู regression test ที่ `/regression-sim-use` แทน) | ไม่มี auto-check | ให้ user เช็ค UI จริงเองก่อนปิด task แบบเดิม (ข้ามลูปด้านล่างทั้งหมด) |
+| Web | `claude-in-chrome` (ตาม skill `ui-check`) ขับ Chrome จริงของ user | ต้อง run local dev server ได้ (คำสั่ง start ดูจาก `project-blueprint.md` § 6) |
+| iOS | `ios-simulator-skill` (ตาม skill `ui-check`) ขับ iOS Simulator | ต้อง build app ขึ้น Simulator ได้ (`xcodebuild`/scheme จาก `project-blueprint.md` § 6) |
+| Stack อื่นที่ไม่มีเครื่องมือ automate UI (เช่น Android) | ไม่มี auto-check | ให้ user เช็ค UI จริงเองก่อนปิด task แบบเดิม (ข้ามลูปด้านล่างทั้งหมด) |
 
-ขั้นตอนย่อยของ auto-check (Web):
+ขั้นตอนย่อยของ auto-check (Web) — ใช้ skill `ui-check` เส้นทาง Web (claude-in-chrome):
 
 ```
-1. เปิดของจริงที่เพิ่ง implement ขึ้นมา — start dev server (ถ้ายังไม่รัน) แล้วเปิด browser ไปที่ route ของ feature นี้ผ่าน webapp-testing
-2. ถ่าย screenshot ของหน้า/จอที่เพิ่งทำด้วย `page.screenshot()` ผ่าน webapp-testing
+1. เปิดของจริงที่เพิ่ง implement ขึ้นมา — start dev server (ถ้ายังไม่รัน) แล้วใช้ claude-in-chrome (`tabs_context_mcp` → `navigate`/`tabs_create_mcp`) ไปที่ route ของ feature นี้
+2. ถ่าย screenshot ของหน้า/จอที่เพิ่งทำด้วย `computer` (screenshot action) ผ่าน claude-in-chrome
 3. เทียบ screenshot ที่ได้กับรูปอ้างอิงจากขั้นที่ 1 ด้วย vision — เช็คทีละจุด: layout/โครงหน้าจอ, สี, spacing, icon, ข้อความ/label
 4. ไม่ตรง → กลับไปแก้ frontend ต่อ (ขั้นตอนหลักข้อ 5) แล้ววนกลับมาทำขั้นนี้ใหม่ตั้งแต่ต้น — วนได้สูงสุด 3 รอบ
 5. วนครบ 3 รอบแล้วยังไม่ตรง → หยุดทันที ห้ามวนต่อเอง รายงาน user ว่าแก้ไปกี่รอบ ต่างจากรูปตรงจุดไหนบ้างในแต่ละรอบ (พร้อม screenshot ทุกรอบ) รอ user ตัดสินใจว่าจะแก้ต่อหรือรับ diff ที่เหลือ
@@ -75,7 +75,7 @@ argument-hint: [auto (รันทุก task) หรือเว้นว่า
 ```
 🖼️ UI Check — [ชื่อ task]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-เครื่องมือ: webapp-testing (web) / ios-simulator-skill (iOS) / ไม่มี (user เช็คเอง)
+เครื่องมือ: claude-in-chrome (web) / ios-simulator-skill (iOS) / ไม่มี (user เช็คเอง)
 รอบที่: [N]/3
 
 | จุดที่เทียบ | ตรงกับรูปอ้างอิงไหม | หมายเหตุ |
@@ -99,7 +99,7 @@ Screenshot: [path]
 2. ถ้า user ตอบกำกวม (เช่น "ดูโอเคนะ") ให้ถือว่า**ไม่ approve** — ต้องได้คำตอบยืนยันชัดเจน (เช่น "approve", "ไปเลย")
 3. หลัง approve แล้ว รันทุก task ตามลำดับ dependency ต่อเนื่องโดยไม่หยุดถามระหว่าง task — แต่ยังทำครบทุก step (1-8) ของแต่ละ task รวมถึง commit แยกต่อ task
 4. **หยุดและถาม user** ทันทีเมื่อ:
-   - test/build fail แล้วไม่มีวิธีแก้ที่ชัดเจน (ส่งต่อ `@refactor-agent` แล้วยัง fail)
+   - test/build fail แล้วไม่มีวิธีแก้ที่ชัดเจน (ส่งต่อ `@senior-full-stack-agent` แล้วยัง fail)
    - AC ของ task คลุมเครือจนตัดสินใจไม่ได้
    - task นั้น high-risk/irreversible (auth, migration ที่ทำลายข้อมูล, payment, deploy, secrets)
 5. เมื่อ user แก้ปัญหาที่ block แล้ว ให้รัน `/build auto` ซ้ำ — จะ resume จาก task ที่ยังไม่เสร็จ

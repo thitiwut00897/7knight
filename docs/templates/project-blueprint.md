@@ -62,7 +62,7 @@
 
 ## 6. Commands
 
-> Agent ทุกตัว (tester-agent, refactor-agent, senior-full-stack-agent ฯลฯ) อ่านคำสั่งจากตารางนี้เสมอ — ห้ามสมมติว่าเป็น `npx eslint`/`npx jest` หรือเครื่องมือใดโดยไม่เช็คที่นี่ก่อน
+> Agent ทุกตัว (tester-agent, senior-full-stack-agent ฯลฯ) อ่านคำสั่งจากตารางนี้เสมอ — ห้ามสมมติว่าเป็น `npx eslint`/`npx jest` หรือเครื่องมือใดโดยไม่เช็คที่นี่ก่อน
 
 | ประเภท | คำสั่ง |
 |---|---|
