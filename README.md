@@ -34,7 +34,7 @@
 ```mermaid
 flowchart TD
     A["📋 1. Define — /spec<br/><i>อ่านการ์ด Jira ให้ครบ (ถ้ามี) → สรุป → เขียน SPEC.md</i>"]
-    B["🗺️ 2. Plan — /plan<br/><i>แบ่ง vertical-slice task fullstack → tasks/plan.md</i>"]
+    B["🗺️ 2. Plan — /plan<br/><i>แบ่ง vertical-slice task fullstack → tasks/{feature}/plan.md</i>"]
     C["🔨 3. Build — /build [auto]<br/><i>TDD ทีละ task: RED → GREEN → task มี UI ขอรูปอ้างอิง + auto-check ก่อนปิด → commit</i>"]
     D["🧪 4. Verify — /verify<br/><i>full regression + user เช็ค UI รวมทั้งฟีเจอร์</i>"]
     E["🔍 5. Review — /review<br/><i>5-axis review + OWASP security audit → จบ lifecycle</i>"]
@@ -64,7 +64,7 @@ flowchart TD
 /create-feature เพิ่มหน้าประวัติการสั่งซื้อ พร้อม filter ตามช่วงเวลา และ export CSV
 ```
 
-`/spec` จะถามว่ามีการ์ด Jira ไหม → ตอบ "ไม่มี" → ใช้คำอธิบายข้างบนเป็น requirement ตรงๆ → สรุปให้คุณ confirm → ได้ `SPEC.md` → `/plan` แบ่ง task ให้ approve → ไล่ Build → Verify → Review จนจบ
+`/spec` จะถามว่ามีการ์ด Jira ไหม → ตอบ "ไม่มี" → ใช้คำอธิบายข้างบนเป็น requirement ตรงๆ → สรุปให้คุณ confirm → ได้ `tasks/{feature}/SPEC.md` → `/plan` แบ่ง task ให้ approve → ไล่ Build → Verify → Review จนจบ
 
 ### 2) รันทีละ stage เอง — ควบคุมเต็มที่
 
@@ -106,8 +106,8 @@ flowchart TD
 | คำสั่ง | ทำอะไร | ผลลัพธ์ |
 |---|---|---|
 | `/create-feature [งาน/การ์ด]` | เริ่ม lifecycle เต็ม 5 stage ผ่าน @po-agent | ฟีเจอร์ผ่าน review เสร็จสมบูรณ์ |
-| `/spec [งาน/การ์ด]` | เก็บ requirement + confirm ความเข้าใจ | `SPEC.md` |
-| `/plan` | แบ่งเป็น vertical-slice task (read-only ห้ามแก้ไฟล์) | `tasks/plan.md` + `tasks/todo.md` |
+| `/spec [งาน/การ์ด]` | เก็บ requirement + confirm ความเข้าใจ | `tasks/{feature}/SPEC.md` |
+| `/plan` | แบ่งเป็น vertical-slice task (read-only ห้ามแก้ไฟล์) | `tasks/{feature}/plan.md` + `tasks/{feature}/todo.md` |
 | `/build [auto]` | implement แบบ TDD ทีละ task บน feature branch จาก develop — task ที่มี UI ขอรูปอ้างอิงจาก user ก่อนเริ่ม แล้วปิด task ด้วย auto-check เทียบผลลัพธ์กับรูปนั้น (`claude-in-chrome` บน web / `ios-simulator-skill` บน iOS — วนแก้เองสูงสุด 3 รอบก่อนส่งให้ user confirm, stack อื่นให้ user เช็คเอง) | commit แยกต่อ task |
 | `/verify` | full regression (lint + test + build เต็มชุด) + รับ test case จาก QA ถ้ามี + เช็ค UI ทั้งฟีเจอร์ด้วย user เช็คเอง | PASS / FAIL report |
 | `/review` | 6-axis review + security audit บน diff ทั้ง branch (stage สุดท้ายของ lifecycle) | รายงาน Critical / Important / Suggestion |

@@ -1,5 +1,5 @@
 ---
-description: Build stage — implement task ทีละตัว (หรือทั้งหมดด้วย auto) ตาม tasks/plan.md สร้าง feature branch ก่อนเริ่ม แล้ว commit + sync Jira ต่อ task
+description: Build stage — implement task ทีละตัว (หรือทั้งหมดด้วย auto) ตาม tasks/{feature}/plan.md สร้าง feature branch ก่อนเริ่ม แล้ว commit + sync Jira ต่อ task
 argument-hint: [auto (รันทุก task) หรือเว้นว่าง (task ถัดไปเท่านั้น)]
 ---
 
@@ -7,10 +7,10 @@ argument-hint: [auto (รันทุก task) หรือเว้นว่า
 
 ## ก่อนเริ่ม task แรกของ plan นี้ (ทำครั้งเดียวต่อ plan)
 
-1. ตรวจว่ามี `tasks/plan.md` แล้ว — ถ้าไม่มี บอก user ให้รัน `/plan` ก่อน
+1. หา folder ฟีเจอร์ `tasks/{feature}/` (จาก `$ARGUMENTS` — ถ้ามีหลาย folder และไม่แน่ใจ ให้ถาม user ว่าจะ build ฟีเจอร์ไหน) แล้วตรวจว่ามี `tasks/{feature}/plan.md` แล้ว — ถ้าไม่มี บอก user ให้รัน `/plan` ก่อน
 2. อ่าน `docs/codebase-docs/project-blueprint.md` § 7 Git Workflow เพื่อรู้ base branch (ปกติคือ `develop`)
 3. สร้าง branch ใหม่จาก base branch นั้น ชื่อ:
-   - `feature/{JIRA-KEY}/{short-name}` ถ้า plan นี้มีการ์ด Jira (key มาจาก `tasks/plan.md`)
+   - `feature/{JIRA-KEY}/{short-name}` ถ้า plan นี้มีการ์ด Jira (key มาจาก `tasks/{feature}/plan.md`)
    - `feature/{short-name}` ถ้าไม่มีการ์ด
 4. Checkout เข้า branch ใหม่นี้ — commit ทุก task ของ plan นี้จะเข้า branch เดียวกันนี้เท่านั้น
 
@@ -28,13 +28,13 @@ argument-hint: [auto (รันทุก task) หรือเว้นว่า
 7. รัน full test suite (regression) + build/compile check ตาม project-blueprint.md § 6
 8. Commit เข้า feature branch — commit message อ้างชื่อ/key การ์ด Jira ถ้ามี
 9. ถ้ามีการ์ด Jira: mark subtask ของ task นี้เป็น Done ใน Jira + อัปเดต status การ์ดหลัก (เช่น → In Progress ถ้าเป็น task แรก)
-10. Mark task เป็น complete ใน tasks/todo.md
+10. Mark task เป็น complete ใน tasks/{feature}/todo.md
 ```
 
 ### ขั้นที่ 1 — ขอรูปอ้างอิง UI ก่อนเริ่ม task
 
-1. ดู `tasks/plan.md` ก่อนว่า task นี้มี AC ที่เกี่ยวกับ UI/frontend ไหม — ถ้าเป็น backend-only task ข้ามขั้นนี้ไปเลย ไม่ต้องขอรูป
-2. ถ้ามีรูปติดมากับ `SPEC.md`/การ์ด Jira อยู่แล้วตั้งแต่ตอน `/spec` ใช้รูปนั้นได้เลย ไม่ต้องขอซ้ำ
+1. ดู `tasks/{feature}/plan.md` ก่อนว่า task นี้มี AC ที่เกี่ยวกับ UI/frontend ไหม — ถ้าเป็น backend-only task ข้ามขั้นนี้ไปเลย ไม่ต้องขอรูป
+2. ถ้ามีรูปติดมากับ `tasks/{feature}/SPEC.md`/การ์ด Jira อยู่แล้วตั้งแต่ตอน `/spec` ใช้รูปนั้นได้เลย ไม่ต้องขอซ้ำ
 3. ถ้ายังไม่มีรูป — หยุดถาม user ตรงๆ ว่าขอรูป mockup/design ของ task นี้ ก่อนเริ่ม step 2 (RED test) **ห้ามเดา layout เองแล้วเดินหน้าไปก่อน** แม้จะดูเดาได้ก็ตาม
 4. เก็บ path/ไฟล์รูปที่ได้ไว้อ้างอิงตลอด task นี้ — ใช้ทั้งตอนวิเคราะห์ backend contract (ขั้น 3), implement frontend (ขั้น 5), และเทียบผลลัพธ์ตอนปิด task (ขั้น 6)
 
@@ -95,7 +95,7 @@ Screenshot: [path]
 
 ## Mode: `auto`
 
-1. ขอ approve **ครั้งเดียว** สำหรับ task ที่เหลือทั้งหมดใน `tasks/plan.md`
+1. ขอ approve **ครั้งเดียว** สำหรับ task ที่เหลือทั้งหมดใน `tasks/{feature}/plan.md`
 2. ถ้า user ตอบกำกวม (เช่น "ดูโอเคนะ") ให้ถือว่า**ไม่ approve** — ต้องได้คำตอบยืนยันชัดเจน (เช่น "approve", "ไปเลย")
 3. หลัง approve แล้ว รันทุก task ตามลำดับ dependency ต่อเนื่องโดยไม่หยุดถามระหว่าง task — แต่ยังทำครบทุก step (1-8) ของแต่ละ task รวมถึง commit แยกต่อ task
 4. **หยุดและถาม user** ทันทีเมื่อ:

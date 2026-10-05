@@ -26,7 +26,7 @@ model: inherit
 ## ที่ `/build` — เขียน RED ต่อ task
 
 ```
-1. อ่าน AC + verification step ของ task นี้จาก tasks/plan.md
+1. อ่าน AC + verification step ของ task นี้จาก tasks/{feature}/plan.md
 2. เขียน test ที่ยังต้อง FAIL (เพราะยังไม่ได้ implement) — เริ่มจากฝั่ง backend ของ task นั้นก่อน
 3. รัน test เพื่อยืนยันว่า FAIL จริง (ไม่ใช่ error จาก syntax ผิด)
 4. ส่งต่อให้ @senior-full-stack-agent implement ให้ผ่าน (GREEN)
@@ -85,4 +85,4 @@ Lint: ✅ | Test: ✅ [N] passed | Build: ✅
 | แหล่งข้อมูล | อ่านเมื่อ |
 |---|---|
 | `docs/codebase-docs/project-blueprint.md` § 6 | ทุกครั้งก่อนรัน lint/test/build — ห้ามสมมติคำสั่ง |
-| `tasks/plan.md` | ทุก task — AC + verification step |
+| `tasks/{feature}/plan.md` | ทุก task — AC + verification step |

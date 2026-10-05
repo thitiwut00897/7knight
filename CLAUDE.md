@@ -5,8 +5,8 @@
 
 ตอน `git add` / `git commit` **ห้ามใส่ไฟล์การทำงานของ AI workflow** เข้าไปด้วย เช่น:
 
-- `SPEC.md`
-- `tasks/plan.md`
-- `tasks/todo.md`
+- `tasks/{feature}/SPEC.md`
+- `tasks/{feature}/plan.md`
+- `tasks/{feature}/todo.md`
 
 ไฟล์เหล่านี้เป็น artifact ที่ generate จาก skill stage `/spec`, `/plan`, `/build` (7knight) ใช้เพื่อติดตามงานระหว่างทำ ไม่ใช่ deliverable ของโปรเจกต์ — ปล่อยให้อยู่ใน working directory ตามปกติ (ไม่ gitignore) แต่เวลา stage/commit ให้เลือกเฉพาะไฟล์ที่เกี่ยวกับงานจริง ยกเว้น user จะสั่งให้ commit ไฟล์เหล่านี้ชัดเจน

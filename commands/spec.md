@@ -21,7 +21,7 @@ argument-hint: [ลิงก์/key การ์ด Jira หรือคำอ�
    - ถ้าการ์ดเป็นประเภท **Bug**:
      1. เช็ค comment ทั้งหมดที่อ่านมาในข้อ 2 ว่ามี comment ไหนระบุว่า**เคย test/retest ไปแล้ว** หรือไม่ (เช่น QA ยืนยันผลทดสอบ)
         - ถ้า**ไม่มี** comment แบบนั้น → ใช้ **comment ล่าสุด** เป็นแหล่งข้อมูลหลักของอาการบัค แทนที่จะยึด description เดิม (description อาจไม่ตรงกับอาการล่าสุดแล้ว)
-     2. **ข้าม** ข้อ 4-7 ด้านล่างทั้งหมด (ไม่ต้องเขียน `SPEC.md`, ไม่ต้องไป `/plan`) — วิเคราะห์โค้ดในโปรเจกต์เพื่อหา root cause ของบัคแทน (แนะนำใช้ skill `systematic-debugging`)
+     2. **ข้าม** ข้อ 4-7 ด้านล่างทั้งหมด (ไม่ต้องเขียน `tasks/{feature}/SPEC.md`, ไม่ต้องไป `/plan`) — วิเคราะห์โค้ดในโปรเจกต์เพื่อหา root cause ของบัคแทน (แนะนำใช้ skill `systematic-debugging`)
      3. สรุป root cause ให้ user เห็นสั้นๆ ชัดเจน พร้อม file:line ที่เกี่ยวข้อง — **ไม่ต้องรอ user confirm** แล้วแก้โค้ดต่อทันที (ข้อยกเว้นเฉพาะ Bug Fast Path นี้ ต่างจาก gate ปกติที่ต้องรอ confirm ก่อนแก้ code)
      4. แก้เสร็จแล้ว **รันเทส/reproduce เคสเดิมของบัคเพื่อ verify การแก้** — ถ้าไม่ผ่าน กลับไปแก้ต่อเอง วนซ้ำจนกว่าจะผ่าน
      5. เมื่อผ่านหมดแล้วเท่านั้น จึง **แจ้ง user ว่าทำเสร็จแล้ว** สรุปว่าเจอ root cause อะไร แก้อะไร ผลทดสอบเป็นอย่างไร เพื่อให้ user เช็คเป็นรอบสุดท้าย
@@ -37,6 +37,6 @@ argument-hint: [ลิงก์/key การ์ด Jira หรือคำอ�
    - ใช้ค่าจาก blueprint เป็น baseline สำหรับ tech stack, code style, testing strategy, boundaries
    - ถามเฉพาะส่วนที่ blueprint ไม่ครอบคลุมหรือเจาะจงกับงานนี้เท่านั้น
 
-6. **เขียน `SPEC.md`** ที่ root โปรเจกต์ ครอบคลุม: objective, AC (จากสรุปที่ user confirm แล้ว), tech stack + code style + testing strategy (จาก blueprint), boundaries (สิ่งที่ทำได้เสมอ / ต้องถามก่อน / ห้ามทำเด็ดขาด)
+6. **สร้าง folder ฟีเจอร์ก่อน** ที่ `tasks/{feature}/` — ชื่อ `{JIRA-KEY}-{short-name}` ถ้ามีการ์ด (เช่น `tasks/ABC-123-login/`) หรือ `{short-name}` ถ้าไม่มีการ์ด (เช่น `tasks/login/`) — แยก folder ต่อฟีเจอร์เพื่อให้ทำหลายเรื่องพร้อมกันได้ แล้ว **เขียน `tasks/{feature}/SPEC.md`** ครอบคลุม: objective, AC (จากสรุปที่ user confirm แล้ว), tech stack + code style + testing strategy (จาก blueprint), boundaries (สิ่งที่ทำได้เสมอ / ต้องถามก่อน / ห้ามทำเด็ดขาด)
 
-7. แสดงสรุป `SPEC.md` ให้ user ยืนยันอีกครั้งก่อนไปยัง `/plan`
+7. แสดงสรุป `tasks/{feature}/SPEC.md` ให้ user ยืนยันอีกครั้งก่อนไปยัง `/plan`

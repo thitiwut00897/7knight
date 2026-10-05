@@ -14,7 +14,7 @@ argument-hint: [ลิงก์/key การ์ด Jira หรือคำอ�
 ### ที่ stage `/spec` — ปรับ 2 ข้อจาก `/spec` ปกติ
 
 1. **ห้ามเข้า "Bug Fast Path"** (ข้อ 3 ของ `/spec`) แม้การ์ดจะเป็นประเภท Bug ก็ตาม — `/create-feature` ถือว่าทุกงานเป็นการสร้าง feature เสมอ ให้ทำข้อ 4-7 ของ `/spec` เต็มรูปแบบ (ถ้างานนี้เป็นบั๊กจริงๆ แนะนำให้ user เรียก `/spec` ตรงๆ แทน เพื่อเข้า Bug Fast Path ได้)
-2. **`SPEC.md` ต้องมีหัวข้อ diagram เพิ่ม 2 อัน** (เป็น mermaid diagram) ต่อจากหัวข้อปกติ:
+2. **`tasks/{feature}/SPEC.md` ต้องมีหัวข้อ diagram เพิ่ม 2 อัน** (เป็น mermaid diagram) ต่อจากหัวข้อปกติ:
    - **Flow diagram** — flowchart ของขั้นตอน/การตัดสินใจหลักในฟีเจอร์นี้
    - **Database diagram** — erDiagram ของ table/entity ที่เกี่ยวข้องและความสัมพันธ์ระหว่างกัน (ถ้าฟีเจอร์นี้ไม่แตะ database เลย ให้ข้ามหัวข้อนี้และระบุเหตุผลสั้นๆ แทน)
 

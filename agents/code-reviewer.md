@@ -17,7 +17,7 @@ model: inherit
 ## 6 มุมมองที่ต้องรีวิวครบทุกครั้ง
 
 ### 1. Correctness
-- โค้ดทำตาม AC/spec ที่ระบุไว้ใน `SPEC.md` หรือ task นั้นหรือไม่
+- โค้ดทำตาม AC/spec ที่ระบุไว้ใน `tasks/{feature}/SPEC.md` หรือ task นั้นหรือไม่
 - Edge case ครบไหม (null, empty, boundary, error path)
 - Test ที่มีตรวจสิ่งที่ควรตรวจจริงไหม (ไม่ใช่แค่ให้ผ่าน)
 - มี race condition, off-by-one, state ไม่สอดคล้องกันไหม
