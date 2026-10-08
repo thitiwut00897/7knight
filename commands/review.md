@@ -1,5 +1,6 @@
 ---
 description: Review stage (สุดท้ายของ lifecycle) — 6-axis code review + security audit บน diff ปัจจุบัน (Critical ต้องแก้ก่อนถือว่าจบงาน)
+model: opus
 ---
 
 เริ่ม Review stage (ต้องผ่าน `/verify` มาแล้ว):

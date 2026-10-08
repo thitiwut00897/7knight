@@ -1,6 +1,7 @@
 ---
 description: Define stage — อ่านการ์ด Jira (ถ้ามี) ให้ครบ สรุปและ confirm ความเข้าใจ แล้วเขียน SPEC.md
 argument-hint: [ลิงก์/key การ์ด Jira หรือคำอธิบายงานถ้าไม่มีการ์ด]
+model: opus
 ---
 
 เริ่ม Define stage สำหรับ: $ARGUMENTS

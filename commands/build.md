@@ -1,6 +1,7 @@
 ---
 description: Build stage — implement task ทีละตัว (หรือทั้งหมดด้วย auto) ตาม tasks/{feature}/plan.md สร้าง feature branch ก่อนเริ่ม แล้ว commit + sync Jira ต่อ task
 argument-hint: [auto (รันทุก task) หรือเว้นว่าง (task ถัดไปเท่านั้น)]
+model: sonnet
 ---
 
 `$ARGUMENTS` คือ `auto` (รันทุก task ต่อเนื่อง) หรือเว้นว่าง (task ถัดไป 1 ตัวแล้วหยุด)

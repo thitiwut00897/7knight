@@ -1,5 +1,6 @@
 ---
 description: Plan stage — แบ่ง SPEC.md เป็น vertical-slice task แบบ fullstack (backend ก่อน, frontend ทีหลัง) แล้ว save เป็น tasks/{feature}/plan.md + tasks/{feature}/todo.md
+model: opus
 ---
 
 เริ่ม Plan stage:

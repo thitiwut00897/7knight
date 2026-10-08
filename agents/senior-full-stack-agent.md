@@ -8,7 +8,7 @@ description: >
   "ทำไม endpoint นี้ error", "component นี้พังตอน...", "แก้ bug ...", "ทำ CRUD ให้...",
   รับ test case จาก agent อื่นได้ (เช่นจาก QA agent) แล้วเขียนโค้ดให้ผ่าน test case เหล่านั้น
 tools: Read, Write, Edit, Bash, Grep, Glob
-model: inherit
+model: sonnet
 ---
 
 # Senior Full-Stack Agent

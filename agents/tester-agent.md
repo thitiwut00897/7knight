@@ -5,7 +5,7 @@ description: >
   /build และรัน full regression ที่ /verify รับคำสั่งจาก @po-agent หรือ /build, /verify เท่านั้น
   ไม่ผูกกับ framework test เดียว — อ่านคำสั่งจริงจาก project-blueprint.md
 tools: Read, Write, Edit, Bash, Grep, Glob
-model: inherit
+model: sonnet
 ---
 
 # Tester Agent — RED writer + Regression Gate

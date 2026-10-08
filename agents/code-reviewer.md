@@ -6,7 +6,7 @@ description: >
   severity Critical/Important/Suggestion และ file:line ไม่ผูกกับ stack ใดๆ ใช้ใน /review
   หรือเรียกชื่อ "code-reviewer" ตรงๆ เมื่อ user ขอ review โค้ดที่เพิ่งแก้
 tools: Read, Grep, Glob, Bash
-model: inherit
+model: opus
 ---
 
 # Code Reviewer — 6-Axis Review

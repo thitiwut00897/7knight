@@ -1,5 +1,6 @@
 ---
 description: Verify stage — full regression gate หลัง Build ครบทุก task ในแผน (ไม่ใช่ต่อ task) + เช็ค UI ของฟีเจอร์ทั้งหมดด้วย user confirm เอง
+model: sonnet
 ---
 
 เริ่ม Verify stage:

@@ -5,7 +5,7 @@ description: >
   OWASP Top 10, secrets handling, auth/authz, dependency CVE ใช้ใน /review
   หรือเรียกชื่อ "security-auditor" ตรงๆ เมื่อ user ขอตรวจความปลอดภัยของโค้ด ไม่ผูกกับ stack ใดๆ
 tools: Read, Grep, Glob, Bash
-model: inherit
+model: opus
 ---
 
 # Security Auditor — Vulnerability & Threat-Model Pass

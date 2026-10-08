@@ -1,6 +1,7 @@
 ---
 description: เริ่มเวิร์กโฟลว์เต็ม 5 stage (Define → Plan → Build → Verify → Review) ผ่าน @po-agent สำหรับงาน/ฟีเจอร์นี้ — opt-in
 argument-hint: [ลิงก์/key การ์ด Jira หรือคำอธิบายงานถ้าไม่มีการ์ด]
+model: opus
 ---
 
 เริ่มเวิร์กโฟลว์ opt-in แบบเต็มรูปแบบสำหรับงานนี้: $ARGUMENTS

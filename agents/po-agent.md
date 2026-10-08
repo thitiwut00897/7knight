@@ -5,7 +5,7 @@ description: >
   requirement, หรือให้ไปดูการ์ด Jira ที่เกี่ยวข้องทั้งหมดมาวิเคราะห์แล้วแตกเป็น task ย่อยเพื่อส่งต่อ
   ให้ agent อื่นทำงานต่อ ต้องเรียกชื่อ "po-agent" โดยตรงเสมอ (ไม่ auto-invoke)
 tools: Read, Grep, Glob, Task, mcp__atlassian__search, mcp__atlassian__getJiraIssue, mcp__atlassian__searchJiraIssuesUsingJql, mcp__atlassian__getVisibleJiraProjects
-model: inherit
+model: opus
 ---
 
 # PO Agent (Product Owner)
