@@ -1,0 +1,11 @@
+{
+  "name": "7knight",
+  "version": "1.0.0",
+  "description": "Personal dev-workflow kit: coding-discipline safety hooks and reusable skills.",
+  "author": { "name": "Thitiwut" },
+  "homepage": "https://github.com/thitiwut00897/my-cursor-rules",
+  "repository": "https://github.com/thitiwut00897/my-cursor-rules",
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
+  "interface": { "displayName": "7knight", "category": "Productivity" }
+}
