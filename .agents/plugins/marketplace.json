@@ -1,0 +1,12 @@
+{
+  "name": "7knight",
+  "interface": { "displayName": "7knight" },
+  "plugins": [
+    {
+      "name": "7knight",
+      "source": { "source": "local", "path": "./" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
+    }
+  ]
+}
